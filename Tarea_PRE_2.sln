@@ -1,22 +1,56 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tarea_PRE_2", "Tarea_PRE_2.csproj", "{7598A263-FDF1-465B-BB99-322516E65780}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7598A263-FDF1-465B-BB99-322516E65780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7598A263-FDF1-465B-BB99-322516E65780}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7598A263-FDF1-465B-BB99-322516E65780}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7598A263-FDF1-465B-BB99-322516E65780}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-EndGlobal
+// Iniciamos declarando la clase, la cual representara a un empleado
+class empleado
+{
+    // Declariacion de la informacion del empleado (nombre y salario)
+    public string nomb { get; set; }
+    public double sala { get; set; }
+
+    // Inicialisamos las variables de nombre y salario 
+    public empleado(string nombre, double salario)
+    {
+        // Realizamos la asignacion de los valores a la informacion del empleado 
+        nomb = nombre;
+        sala = salario;
+    }
+    // Se muestra la informacion basica del empleado y lo mandamos a imprimir 
+    public void mostrarinfo()
+    {
+        Console.WriteLine($"Empleado: {nomb}, Salario: ${sala}");
+    }
+}
+// Declaramos una segunda clase "Gerente", la cual hereda la primera "Empleado"lo que significa que tiene acceso a sus atributos y métodos.
+class Gerente : empleado
+{
+    // Añadimos un atributo adicional 
+    public string departa { get; set; }
+
+    // Usamos metodo especial que inicializa los atributos de la clase "Gerente"
+    // usa el constructor de la clase padre "Empleado" mediante "base" para inicializar "Nombre" y "Salario".
+    public Gerente(string nombre, double salario, string departamento) : base(nombre, salario)
+    {
+        //Asignamos el valor recibido como parámetro al atributo "departa"
+        departa = departamento;
+    }
+
+    // Mostramos la clase Gerente esta muestra el departamento que dirige el gerente
+    public void mostrardeparta()
+    {
+        Console.WriteLine($"{nomb} es gerente del departamento de {departa}.");
+    }
+}
+// Clase principal contiene el punto de entrada del programa (Main)
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Aquí creamos un empleado llamado "Juan Pérez" con un salario de $2500
+        empleado empleado = new empleado("Juan Pérez", 2500);
+        empleado.mostrarinfo(); // Llama al método de la clase1
+
+        // Aquí creamos un gerente llamado "Ana López" con un salario de $5800 y que dirige el departamento de "Recursos Humanos"
+        Gerente gerente = new Gerente("Ana López", 5800, "Recursos Humanos");
+        gerente.mostrarinfo(); // Llama al método heredado de la clase1
+        gerente.mostrardeparta(); // Llama al método específico de la clase2
+    }
+}

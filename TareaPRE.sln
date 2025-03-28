@@ -1,22 +1,36 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TareaPRE", "TareaPRE.csproj", "{F689C362-A1B3-446B-ACA3-B1F87A784B8E}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F689C362-A1B3-446B-ACA3-B1F87A784B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F689C362-A1B3-446B-ACA3-B1F87A784B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F689C362-A1B3-446B-ACA3-B1F87A784B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F689C362-A1B3-446B-ACA3-B1F87A784B8E}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-EndGlobal
+//abrimos el using SYstem para empezar nuestro codigo
+using System;
+//Creamos una clase llamada mascota
+public class mascotas
+{
+    //Creamos nuestro metodo principal para llamar los otros metodos
+    public static void Main(string[] args)
+    {
+        //Creamos una instancia llamada mascotas (proveniente de la clase mascotas) para invocar el metodo captura
+        mascotas mas = new mascotas();
+        //invocamos el metodo "captura"
+        mas.captura();
+    }
+    //Creamos un metodo privado (utilizado unicamente por la clase), el cual sera un metodo String que retornara el mensaje principal
+    private string Mascota(string Raza, string Nombre, string Tipo, string Color)
+    {
+        //Retornamos un mensaje el cual sera capturado por el metodo captura
+        return "El nombre de la mascota es " + Nombre + " \n su raza es " + Raza + "\n El tipo de animal: " + Tipo + "\n Color del animal es " + Color;
+    }
+    public void captura()
+    {
+        String Nombre, Raza, Tipo, Color;
+        //Capturamos todas las variables necesarias;
+        Console.WriteLine("Escribe el Nombre del animal");
+        Nombre = Console.ReadLine();
+        Console.WriteLine("Escribe la raza del animal");
+        Raza = Console.ReadLine();
+        Console.WriteLine("Que tipo de animal es");
+        Tipo = Console.ReadLine();
+        Console.WriteLine("Escribe el color del animal");
+        Color = Console.ReadLine();
+        //invocamos e imprimimos las variables
+        Console.WriteLine(Mascota(Raza, Nombre, Tipo, Color));
+    }
+}

@@ -1,0 +1,297 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+
+public class Producto
+{
+    public string Nombre { get; set; }
+    public string Codigo { get; set; }
+    public double Precio { get; set; }
+    public double Descuento { get; set; }
+    public string Clasificacion { get; set; }
+
+    public Producto(string nombre, string codigo, double precio, double descuento, string clasificacion)
+    {
+        Nombre = nombre;
+        Codigo = codigo;
+        Precio = precio;
+        Descuento = descuento;
+        Clasificacion = clasificacion;
+    }
+}
+
+
+public class Empleado
+{
+    public string Nombres { get; set; }
+    public string Apellidos { get; set; }
+    public string Codigo { get; set; }
+    public string Direccion { get; set; }
+    public string Telefono { get; set; }
+
+    public Empleado(string nombres, string apellidos, string codigo, string direccion, string telefono)
+    {
+        Nombres = nombres;
+        Apellidos = apellidos;
+        Codigo = codigo;
+        Direccion = direccion;
+        Telefono = telefono;
+    }
+}
+
+
+class Venta
+{
+    public DateTime fechaVenta { get; set; }
+    public string nombreCliente { get; set; }
+    public string codigoVenta { get; set; }
+    public string codigoEmpleado { get; set; }
+    public string codigoProducto { get; set; }
+    public int cantidadVendida { get; set; }
+
+}
+
+class Farmacia
+{
+    static public List<Producto> productos = new List<Producto>();
+    static public List<Empleado> empleados = new List<Empleado>();
+    static public List<Venta> ventas = new List<Venta>();
+
+    static string productosArchivoRuta = "productos.json";
+
+    public static void Main(string[] args)
+    {
+        // Configuración inicial
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.ForegroundColor = ConsoleColor.Black;
+        Console.Clear();
+        CargarArchivos();
+        bool salirAlMenu = false;
+
+        while (!salirAlMenu)
+        {
+            // Pantalla de bienvenida
+            Console.WriteLine("\n───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───");
+            Console.WriteLine("───█▒▒░░░░░░░░░▒▒█───");
+            Console.WriteLine("────█░░█░░░░░█░░█────");
+            Console.WriteLine("─▄▄──█░░░▀█▀░░░█──▄▄─");
+            Console.WriteLine("█░░█─▀▄░░░░░░░▄▀─█░░█");
+            Console.WriteLine("█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█");
+            Console.WriteLine("█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█");
+            Console.WriteLine("█░░║║║╠─║─║─║║║║║╠─░░█");
+            Console.WriteLine("█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█");
+            Console.WriteLine("█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█\n");
+
+            Console.WriteLine("\t--Bienvenido a la farmacia Vitalis--");
+            string respuesta;
+            do
+            {
+                Console.WriteLine("   ¿Desea continuar? (S/N)");
+                respuesta = Console.ReadLine()?.ToLower();
+            } while (respuesta != "s" && respuesta != "n");
+
+            if (respuesta == "s")
+            {
+                salirAlMenu = true; // Rompe el bucle del oso
+                Console.Clear();
+            }
+            else if (respuesta == "n")
+            {
+                return; // Cierra el programa completamente
+            }
+        }
+
+        MostrarMenu();
+    }
+
+    static void MostrarMenu()
+    {
+        bool enMenu = true;
+
+        while (enMenu)
+        {
+            Console.WriteLine("\n=== MENÚ PRINCIPAL ===");
+            Console.WriteLine("1. Registrar producto");
+            Console.WriteLine("2. Registrar empleado");
+            Console.WriteLine("3. Registrar venta");
+            Console.WriteLine("4. Mostrar venta diaria");
+            Console.WriteLine("5. Mostrar venta por empleado");
+            Console.WriteLine("6. Mostrar venta por clasificación");
+            Console.WriteLine("7. Salir");
+            Console.Write("\nElija una opción: ");
+
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    RegistrarProducto();
+                    break;
+                case "2":
+                    RegistrarEmpleado();
+                    break;
+                case "3":
+                    RegistrarVenta();
+                    break;
+                case "4":
+                    MostrarVentaDiaria();
+                    break;
+                case "5":
+                    MostrarVentaPorEmpleado();
+                    break;
+                case "6":
+                    MostrarVentaPorClasificacion();
+                    break;
+                case "7":
+                    enMenu = false; // Sale del menú
+                    Console.WriteLine("Saliendo del programa...");
+                    break;
+                default:
+                    Console.WriteLine("\n❌ Opción no válida");
+                    break;
+                      
+            }
+        }
+    }
+
+    static void RegistrarProducto()
+
+    {
+        Console.Clear();
+        Console.WriteLine("\n--- REGISTRAR PRODUCTO ---");
+
+        Console.Write("Código del producto: ");
+        string codigo = Console.ReadLine();
+        if (existeProductoCodigo(codigo))
+        {
+            Console.WriteLine("El producto ya está registrado.");
+            return;
+        }
+
+        Console.Write("Nombre del producto: ");
+        string nombre = Console.ReadLine();
+        Console.Write("Clasificación del producto: ");
+        string clasificacion = Console.ReadLine();
+        Console.Write("Precio: ");
+        double precio = double.Parse(Console.ReadLine());
+        Console.Write("Porcentaje de descuento: ");
+        double descuento = double.Parse(Console.ReadLine());
+
+        Farmacia.productos.Add(new Producto(nombre, codigo, precio, descuento, clasificacion));
+
+        string json = JsonSerializer.Serialize(Farmacia.productos, new JsonSerializerOptions { WriteIndented = true });
+        //Console.Write(json);
+        File.WriteAllText(Farmacia.productosArchivoRuta, json);
+        Console.WriteLine("Producto registrado exitosamente.");
+    }
+
+    static void RegistrarEmpleado()
+    {
+        Console.WriteLine("\n--- REGISTRAR EMPLEADO ---");
+        Dictionary<string, string> empleado = new Dictionary<string, string>();
+
+        Console.Write("Código del empleado: ");
+        string codigo = Console.ReadLine();
+
+        Console.Write("Nombre del empleado: ");
+        string nombre = Console.ReadLine();
+        Console.Write("Apellidos del empleado: ");
+        string apellidos = Console.ReadLine();
+        Console.Write("Dirección: ");
+        string direccion = Console.ReadLine();
+        Console.Write("Teléfono: ");
+        string telefono = Console.ReadLine();
+
+        empleado.Add("codigo", codigo);
+        empleado.Add("nombre", nombre);
+        empleado.Add("apellidos", apellidos);
+        empleado.Add("direccion", direccion);
+        empleado.Add("telefono", telefono);
+
+        Console.WriteLine("Empleado registrado exitosamente.");
+    }
+
+    static void RegistrarVenta()
+    {
+        Console.WriteLine("\n--- REGISTRAR VENTA ---");
+        Dictionary<string, string> venta = new Dictionary<string, string>();
+
+        Console.Write("Fecha de venta (dd/MM/yyyy): ");
+        string fecha = Console.ReadLine();
+        Console.Write("Nombre del cliente: ");
+        string cliente = Console.ReadLine();
+        Console.Write("Código de venta: ");
+        string codigoVenta = Console.ReadLine();
+        Console.Write("Código del empleado: ");
+        string codigoEmpleado = Console.ReadLine();
+        Console.Write("Código del producto: ");
+        string codigoProducto = Console.ReadLine();
+        Console.Write("Cantidad vendida: ");
+        string cantidad = Console.ReadLine();
+        Console.Write("Precio del producto: ");
+        string precio = Console.ReadLine();
+        Console.Write("Descuento: ");
+        string descuento = Console.ReadLine();
+        Console.Write("Total de la venta: ");
+        string total = Console.ReadLine();
+
+        venta.Add("fecha", fecha);
+        venta.Add("cliente", cliente);
+        venta.Add("codigoVenta", codigoVenta);
+        venta.Add("codigoEmpleado", codigoEmpleado);
+        venta.Add("codigoProducto", codigoProducto);
+        venta.Add("cantidad", cantidad);
+        venta.Add("precio", precio);
+        venta.Add("descuento", descuento);
+        venta.Add("total", total);
+
+        Console.WriteLine("Venta registrada exitosamente.");
+    }
+    static void MostrarVentaDiaria()
+    {
+        Console.WriteLine("\n--- Mostrar Venta ---");
+        Console.WriteLine("\tNo se encuentra disponible aun");
+
+
+    }
+
+    static void MostrarVentaPorEmpleado()
+    {
+        Console.WriteLine("\n--- Mostrar Venta ---");
+        Console.WriteLine("\tNo se encuentra disponible aun");
+
+
+    }
+    static void MostrarVentaPorClasificacion()
+    {
+        Console.WriteLine("\n--- Mostrar Venta ---");
+        Console.WriteLine("\tNo se encuentra disponible aun");
+
+
+    }
+
+    static Boolean existeProductoCodigo(string codigo)
+    {
+        return productos.Any(item => item.Codigo == codigo);
+    }
+    static void CargarArchivos()
+    {
+        Console.Clear();
+        try
+        {
+            if (File.Exists(productosArchivoRuta))
+            {
+                string json = File.ReadAllText(productosArchivoRuta);
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    productos = JsonSerializer.Deserialize<List<Producto>>(json);
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error inesperado {ex.Message}");
+        }
+
+    }
+}
